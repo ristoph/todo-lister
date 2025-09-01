@@ -36,7 +36,7 @@ app.get("/todos", async function (req, res){
 });
 
 
-app.post("/completed", async function(req, res) {
+app.put("/completed", async function(req, res) {
     const updatePayload = req.body
     const paresedPayload = updateTodo.safeParse(updatePayload)
 
@@ -47,7 +47,7 @@ app.post("/completed", async function(req, res) {
         return;
     }
 
-    await todo.update({
+    await todo.updateOne({
         _id: updatePayload.id
     },{
         completed: true
