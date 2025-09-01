@@ -1,12 +1,12 @@
-const { z } = require("zod");
+const zod = require("zod");
 
-const createTodo = z.object({
-  title: z.string,
-  description: z.string,
+const createTodo = zod.object({
+  title: zod.string(),
+  description: zod.string(),
 });
 
-const updateTodo = z.object({
-  id: z.string,
+const updateTodo = zod.object({
+  id: zod.string(),
 });
 
 // module.exports = {
