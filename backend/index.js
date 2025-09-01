@@ -1,36 +1,61 @@
-const express = require("express")
-const jwt  = require("jwt")
-const {todo} = require("./db")
-const cors = require("cors")
-const {createTodo, updateTodo} = require("./types")
-const app = express()
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const { todo } = require("./db");
+const cors = require("cors");
+const { createTodo, updateTodo } = require("./types");
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
-app.post( "/todo", async function(req,res){
-    const createPayload = req.body
-    const paresedPayload = createTodo.safeparse(createPayload)
+app.post("/todo", async function (req, res) {
+  const createPayload = req.body;
+  const paresedPayload = createTodo.safeParse(createPayload);
+
+  if (!paresedPayload.success) {
+    res.status(411).json({
+      msg: "Inputs invalid",
+    });
+    return;
+  }
+
+  await todo.create({
+    title: createPayload.title,
+    description: createPayload.description,
+    completed: false,
+  });
+
+  res.json({
+    msg: "Todo created",
+  });
+});
+
+app.get("/todos", async function (req, res){
+    const todos = await todo.find({})
+
+    res.json({todos})
+});
+
+
+app.post("/completed", async function(req, res) {
+    const updatePayload = req.body
+    const paresedPayload = updateTodo.safeParse(updatePayload)
 
     if(!paresedPayload.success){
         res.status(411).json({
-            msg: "Inputs invalid",
+            msg: "Inputs invalid"
         })
         return;
     }
 
-    await todo.create({
-        title: createPayload.title,
-        description: createPayload.description,
-        completed: false
+    await todo.update({
+        _id: updatePayload.id
+    },{
+        completed: true
     })
 
     res.json({
-        msg: "Todo created"
+        msg: "Todo marked as completed"
     })
-})
+});
 
-app.get("/todos",
-)
-
-app.post("/completed",
-)
+app.listen(3000)
