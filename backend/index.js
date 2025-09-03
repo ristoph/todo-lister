@@ -6,7 +6,7 @@ const { createTodo, updateTodo } = require("./types");
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 app.post("/todo", async function (req, res) {
   const createPayload = req.body;
   const paresedPayload = createTodo.safeParse(createPayload);
